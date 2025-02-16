@@ -52,6 +52,7 @@ try:
 except Exception as e:
     print(f"Error processing file: e")
 '''
+  
     response = httpx.post(
         "http://aiproxy.sanand.workers.dev/openai/v1/chat/completions",
         headers={
@@ -64,11 +65,11 @@ except Exception as e:
         },
     )
     gpt_response = response.json()["choices"][0]["message"]["content"]
-
+    
     # Remove markdown code block markers if present
     if gpt_response.startswith("```python"):
         gpt_response = gpt_response.strip("```python").strip("```").strip()
-
+    
     return gpt_response  # Return the cleaned Python code
 
 def save_script(script_code: str, filename: str = "generated_script.py") -> str:
@@ -124,16 +125,13 @@ def run_task(request: TaskRequest):
         raise HTTPException(status_code=400, detail="Task description is required")
 
     try:
-        print('1')
+        
         script_code = query_gpt(request.task)  # Get generated script from LLM
-        print(script_code)
-        print('2')
+        
         script_path = save_script(script_code)  # Save script to file
-        print(script_path)
-        print('3')
+        
         output = execute_script(script_path)  # Execute the script
-        print(output)
-        print('4')
+        
 
         return JSONResponse(content={"message": "Task executed successfully", "output": output}, status_code=200)
 
